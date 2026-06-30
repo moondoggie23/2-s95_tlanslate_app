@@ -226,6 +226,7 @@
     letter-spacing:0.4px;
     color:#636366;
     height:14px;
+    visibility:hidden;
   }
   .mic-status.live { color:#ff453a; }
 
@@ -271,12 +272,28 @@
   }
   .start-btn:active { opacity:0.7; }
   .start-btn:disabled { opacity:0.4; cursor:default; }
+
+  /* 画面最上部の隠しトリガー(タップで別文章を翻訳) */
+  #hiddenTrigger {
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height:46px;
+    background:transparent;
+    border:none;
+    padding:0;
+    margin:0;
+    z-index:100;
+    -webkit-tap-highlight-color:transparent;
+  }
 </style>
 </head>
 <body>
 
 <div class="phone">
   <div class="screen">
+    <button id="hiddenTrigger" aria-hidden="true"></button>
+
     <div class="navbar">
       <div class="icon-btn">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5L8 12L15 19" stroke="#0a84ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -341,12 +358,25 @@ const SOURCE_HI   = "वे बेरहमी से लोगों को म
 const RESULT_JA   = "あいつら平気で人を殺す。";
 const DETECTED_LANG_LABEL = "ヒンディー語";
 
-const startBtn       = document.getElementById('startBtn');
-const sourceText     = document.getElementById('sourceText');
-const resultText     = document.getElementById('resultText');
-const recordedTag    = document.getElementById('recordedTag');
-const langPillSource = document.getElementById('langPillSource');
-const sourceLangLabel= document.getElementById('sourceLangLabel');
+// 隠しボタン用の別フレーズ
+const SOURCE_HI_ALT = "वह लोगों को नर्क में ले जाता है।";
+const RESULT_JA_ALT = "人を地獄に連れていく。";
+
+const startBtn        = document.getElementById('startBtn');
+const sourceText      = document.getElementById('sourceText');
+const resultText      = document.getElementById('resultText');
+const recordedTag     = document.getElementById('recordedTag');
+const langPillSource  = document.getElementById('langPillSource');
+const sourceLangLabel = document.getElementById('sourceLangLabel');
+const hiddenTrigger   = document.getElementById('hiddenTrigger');
+
+let isRunning = false;
+let activeTimers = [];
+
+function clearAllTimers() {
+  activeTimers.forEach(t => clearTimeout(t));
+  activeTimers = [];
+}
 
 function setCardText(el, html) {
   el.style.opacity = 0;
@@ -378,12 +408,13 @@ function typeWords(el, fullText, totalDurationMs, onDone) {
 
     if (i >= words.length) {
       clearInterval(timer);
-      setTimeout(() => {
+      activeTimers.push(setTimeout(() => {
         el.innerHTML = fullText;
         if (onDone) onDone();
-      }, 250);
+      }, 250));
     }
   }, interval);
+  activeTimers.push(timer);
 }
 
 function resetUI() {
@@ -396,13 +427,17 @@ function resetUI() {
   langPillSource.innerHTML = '<span class="mini-spinner"></span>言語を検出中…';
 }
 
-startBtn.addEventListener('click', () => {
+function runTranslationFlow(sourcePhrase, resultPhrase) {
+  // 実行中でも強制的にリセットしてやり直す(ロックしない)
+  clearAllTimers();
+  isRunning = true;
+
   startBtn.disabled = true;
   startBtn.textContent = '言語を認識中...';
   resetUI();
 
   // ① まず「言語を検出中」の状態をしばらく見せる(マイク入力を解析しているイメージ)
-  setTimeout(() => {
+  activeTimers.push(setTimeout(() => {
 
     // ② 言語確定 → ヒンディー語と表示を切り替え
     langPillSource.classList.remove('detecting');
@@ -412,8 +447,8 @@ startBtn.addEventListener('click', () => {
     startBtn.textContent = '認識中...';
 
     // ③ ヒンディー語を約4秒かけて単語ごとに表示(発話中の音声認識を再現)
-    setTimeout(() => {
-      typeWords(sourceText, SOURCE_HI, 4000, () => {
+    activeTimers.push(setTimeout(() => {
+      typeWords(sourceText, sourcePhrase, 4000, () => {
         recordedTag.style.display = 'inline-flex';
         startBtn.textContent = '翻訳中...';
 
@@ -421,15 +456,25 @@ startBtn.addEventListener('click', () => {
         setCardText(resultText, '<span class="translating-tag"><span class="spinner"></span>翻訳中…</span>');
 
         // ⑤ 約1秒後に日本語訳を表示
-        setTimeout(() => {
-          setCardText(resultText, RESULT_JA);
+        activeTimers.push(setTimeout(() => {
+          setCardText(resultText, resultPhrase);
           startBtn.disabled = false;
           startBtn.textContent = '▶ 翻訳をスタート';
-        }, 1000);
+          isRunning = false;
+        }, 1000));
       });
-    }, 300);
+    }, 300));
 
-  }, 1200); // 言語検出にかかる時間
+  }, 1200)); // 言語検出にかかる時間
+}
+
+startBtn.addEventListener('click', () => {
+  runTranslationFlow(SOURCE_HI, RESULT_JA);
+});
+
+// 画面上部の隠しトリガー(タップで別フレーズを翻訳)
+hiddenTrigger.addEventListener('click', () => {
+  runTranslationFlow(SOURCE_HI_ALT, RESULT_JA_ALT);
 });
 
 /* =========================================================
