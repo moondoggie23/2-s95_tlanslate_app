@@ -159,6 +159,32 @@
     0%,100% { opacity:1; } 50% { opacity:0.25; }
   }
 
+  .detecting-tag {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    font-weight:600;
+    color:#8e8e93;
+  }
+  .lang-pill.detecting {
+    color:#8e8e93;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .lang-pill .mini-spinner {
+    width:10px; height:10px;
+    border:1.6px solid rgba(142,142,147,0.3);
+    border-top-color:#8e8e93;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+  }
+  .lang-pill.confirmed {
+    color:#0a84ff;
+    border-color:#0a3a66;
+    background:#102338;
+  }
   .translating-tag {
     display:inline-flex;
     align-items:center;
@@ -262,7 +288,7 @@
     </div>
 
     <div class="lang-row">
-      <div class="lang-pill">ベトナム語</div>
+      <div class="lang-pill" id="langPillSource">言語を自動検出</div>
       <div class="arrow">⇄</div>
       <div class="lang-pill">日本語</div>
     </div>
@@ -277,7 +303,7 @@
         <div class="speaker">
           <svg viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H3V15H6L11 19V5Z" fill="currentColor"/><path d="M15.5 8.5C16.5 9.5 17 10.7 17 12C17 13.3 16.5 14.5 15.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </div>
-        <div class="lang-label">ベトナム語</div>
+        <div class="lang-label" id="sourceLangLabel">言語検出中</div>
         <div class="text" id="sourceText"><span class="placeholder">「翻訳をスタート」を押してください</span></div>
         <div class="listening-tag" id="recordedTag" style="display:none;"><span class="dot"></span>RECORDED</div>
       </div>
@@ -308,15 +334,19 @@
 
 <script>
 /* =========================================================
-   1) 翻訳フロー(ボタン → ベトナム語表示 → 翻訳中 → 日本語表示)
+   1) 翻訳フロー
+   ボタン → 言語認識中 → 言語確定(ヒンディー語) → 音声テキスト表示 → 翻訳中 → 日本語表示
    ========================================================= */
-const SOURCE_VI  = "Bọn chúng giết người không ghê tay.";
-const RESULT_JA  = "あいつら平気で人を殺す。";
+const SOURCE_HI   = "वे बेरहमी से लोगों को मार डालते हैं।";
+const RESULT_JA   = "あいつら平気で人を殺す。";
+const DETECTED_LANG_LABEL = "ヒンディー語";
 
-const startBtn    = document.getElementById('startBtn');
-const sourceText  = document.getElementById('sourceText');
-const resultText  = document.getElementById('resultText');
-const recordedTag = document.getElementById('recordedTag');
+const startBtn       = document.getElementById('startBtn');
+const sourceText     = document.getElementById('sourceText');
+const resultText     = document.getElementById('resultText');
+const recordedTag    = document.getElementById('recordedTag');
+const langPillSource = document.getElementById('langPillSource');
+const sourceLangLabel= document.getElementById('sourceLangLabel');
 
 function setCardText(el, html) {
   el.style.opacity = 0;
@@ -335,8 +365,6 @@ const CURSOR = '<span class="rec-cursor">|</span>';
 function typeWords(el, fullText, totalDurationMs, onDone) {
   const words = fullText.split(' ');
   let i = 0;
-
-  // 単語ごとの間隔を均等割り
   const interval = totalDurationMs / words.length;
 
   el.style.opacity = 1;
@@ -358,31 +386,50 @@ function typeWords(el, fullText, totalDurationMs, onDone) {
   }, interval);
 }
 
-startBtn.addEventListener('click', () => {
-  startBtn.disabled = true;
-  startBtn.textContent = '認識中...';
-
+function resetUI() {
   recordedTag.style.display = 'none';
   setCardText(resultText, '<span class="placeholder">―</span>');
   sourceText.innerHTML = '';
+  sourceLangLabel.textContent = '言語検出中';
+  langPillSource.classList.remove('confirmed');
+  langPillSource.classList.add('detecting');
+  langPillSource.innerHTML = '<span class="mini-spinner"></span>言語を検出中…';
+}
 
-  // ① ベトナム語を約4秒かけて単語ごとに表示(発話中の音声認識を再現)
+startBtn.addEventListener('click', () => {
+  startBtn.disabled = true;
+  startBtn.textContent = '言語を認識中...';
+  resetUI();
+
+  // ① まず「言語を検出中」の状態をしばらく見せる(マイク入力を解析しているイメージ)
   setTimeout(() => {
-    typeWords(sourceText, SOURCE_VI, 4000, () => {
-      recordedTag.style.display = 'inline-flex';
-      startBtn.textContent = '翻訳中...';
 
-      // ② 翻訳中表示(日本語カード側)
-      setCardText(resultText, '<span class="translating-tag"><span class="spinner"></span>翻訳中…</span>');
+    // ② 言語確定 → ヒンディー語と表示を切り替え
+    langPillSource.classList.remove('detecting');
+    langPillSource.classList.add('confirmed');
+    langPillSource.textContent = DETECTED_LANG_LABEL;
+    sourceLangLabel.textContent = DETECTED_LANG_LABEL;
+    startBtn.textContent = '認識中...';
 
-      // ③ 約1秒後に日本語訳を表示
-      setTimeout(() => {
-        setCardText(resultText, RESULT_JA);
-        startBtn.disabled = false;
-        startBtn.textContent = '▶ 翻訳をスタート';
-      }, 1000);
-    });
-  }, 300);
+    // ③ ヒンディー語を約4秒かけて単語ごとに表示(発話中の音声認識を再現)
+    setTimeout(() => {
+      typeWords(sourceText, SOURCE_HI, 4000, () => {
+        recordedTag.style.display = 'inline-flex';
+        startBtn.textContent = '翻訳中...';
+
+        // ④ 翻訳中表示(日本語カード側)
+        setCardText(resultText, '<span class="translating-tag"><span class="spinner"></span>翻訳中…</span>');
+
+        // ⑤ 約1秒後に日本語訳を表示
+        setTimeout(() => {
+          setCardText(resultText, RESULT_JA);
+          startBtn.disabled = false;
+          startBtn.textContent = '▶ 翻訳をスタート';
+        }, 1000);
+      });
+    }, 300);
+
+  }, 1200); // 言語検出にかかる時間
 });
 
 /* =========================================================
