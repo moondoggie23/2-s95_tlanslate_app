@@ -326,7 +326,7 @@
     <div class="cp-section">
       <div class="cp-section-label">⏱ 翻訳ローディングの時間</div>
       <div class="cp-slider-row">
-        <input type="range" class="cp-slider" id="sliderTranslate" min="200" max="5000" step="100" value="1000">
+        <input type="range" class="cp-slider" id="sliderTranslate" min="200" max="10000" step="100" value="1000">
         <div class="cp-slider-val" id="valTranslate">1.0s</div>
       </div>
     </div>
@@ -345,6 +345,10 @@
         <div class="cp-key-row">
           <div class="cp-key-desc">次のステージへスキップ</div>
           <span class="kbd">→</span>
+        </div>
+        <div class="cp-key-row">
+          <div class="cp-key-desc">翻訳結果を今すぐ表示</div>
+          <span class="kbd">Enter</span>
         </div>
         <div class="cp-key-row">
           <div class="cp-key-desc">リセット</div>
@@ -631,6 +635,7 @@ document.addEventListener('keydown', e => {
     goStage1({ ...p.p2, langLabel: p.langLabel });
   }
   if (e.code === 'ArrowRight') { e.preventDefault(); skipToNextStage(); }
+  if (e.code === 'Enter') { e.preventDefault(); if (stage === 3) goStage4(); }
   if (e.code === 'KeyR') { clearAllTimers(); resetUI(); startBtn.disabled = false; startBtn.textContent = '▶ 翻訳をスタート'; }
   if (e.code === 'KeyP') { cpOverlay.classList.contains('open') ? closePanel() : openPanel(); }
 });
