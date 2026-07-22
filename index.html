@@ -2,11 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="翻訳">
-<meta name="theme-color" content="#000000">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>翻訳アプリ モックアップ</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
@@ -15,22 +11,16 @@
     background:#0b0b0d;
     display:flex; align-items:center; justify-content:center;
     font-family:-apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
-    overscroll-behavior:none;
-    -webkit-user-select:none;
-    user-select:none;
   }
 
   /* ---- iPhone frame ---- */
   .phone {
     position:relative;
     width:390px; height:844px;
-    max-width:100vw;
-    max-height:100dvh;
     background:#000;
     border-radius:55px;
     padding:14px;
     box-shadow:0 0 0 2px #2a2a2a, 0 20px 60px rgba(0,0,0,0.6);
-    transition:all .35s cubic-bezier(.32,1,.23,1);
   }
   .screen {
     position:relative;
@@ -40,19 +30,6 @@
     overflow:hidden;
     display:flex;
     flex-direction:column;
-    transition:border-radius .35s cubic-bezier(.32,1,.23,1);
-  }
-
-  /* ---- 全画面モード(ピンチアウトで切替) ---- */
-  body.fullscreen .phone {
-    width:100%;
-    height:100dvh;
-    border-radius:0;
-    padding:0;
-    box-shadow:none;
-  }
-  body.fullscreen .screen {
-    border-radius:0;
   }
   .navbar {
     display:flex; align-items:center; justify-content:space-between;
@@ -178,8 +155,7 @@
 
   /* ---- mic area ---- */
   .mic-area {
-    padding:14px 22px 20px 22px;
-    padding-bottom:max(20px, calc(env(safe-area-inset-bottom) + 8px));
+    padding:14px 22px 30px 22px;
     display:flex; flex-direction:column; align-items:center; gap:12px;
   }
   .wave-wrap { width:100%; height:64px; display:flex; align-items:center; justify-content:center; }
@@ -236,6 +212,8 @@
     max-height:70%;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    touch-action:pan-y;
     transform:translateY(100%);
     transition:transform .35s cubic-bezier(.32,1,.23,1);
   }
@@ -420,10 +398,6 @@
           <div class="cp-key-desc">パネルを開く/閉じる</div>
           <span class="kbd">P</span>
         </div>
-        <div class="cp-key-row">
-          <div class="cp-key-desc">全画面 切替</div>
-          <span class="kbd">F</span>
-        </div>
       </div>
     </div>
 
@@ -482,6 +456,7 @@
       <button class="mic-btn" id="micBtn">
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" fill="currentColor"/><path d="M17 11C17 13.76 14.76 16 12 16C9.24 16 7 13.76 7 11H5C5 14.53 7.61 17.43 11 17.92V21H13V17.92C16.39 17.43 19 14.53 19 11H17Z" fill="currentColor"/></svg>
       </button>
+      <div class="home-indicator"></div>
     </div>
 
   </div>
@@ -737,17 +712,6 @@ document.addEventListener('keydown', e => {
   if (e.code === 'Enter') { e.preventDefault(); if (stage === 3) goStage4(); }
   if (e.code === 'KeyR') { clearAllTimers(); resetUI(); startBtn.disabled = false; startBtn.textContent = '▶ 翻訳をスタート'; }
   if (e.code === 'KeyP') { cpOverlay.classList.contains('open') ? closePanel() : openPanel(); }
-});
-
-/* =========================================================
-   全画面切替(Fキー)
-   ========================================================= */
-document.addEventListener('keydown', e => {
-  if (e.code === 'KeyF') {
-    const tag = document.activeElement.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-    document.body.classList.toggle('fullscreen');
-  }
 });
 
 /* =========================================================
