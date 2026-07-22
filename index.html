@@ -18,7 +18,6 @@
     overscroll-behavior:none;
     -webkit-user-select:none;
     user-select:none;
-    touch-action:none;
   }
 
   /* ---- iPhone frame ---- */
@@ -422,7 +421,7 @@
           <span class="kbd">P</span>
         </div>
         <div class="cp-key-row">
-          <div class="cp-key-desc">全画面 切替(ピンチでも可)</div>
+          <div class="cp-key-desc">全画面 切替</div>
           <span class="kbd">F</span>
         </div>
       </div>
@@ -741,41 +740,8 @@ document.addEventListener('keydown', e => {
 });
 
 /* =========================================================
-   ピンチ操作で全画面切替
-   ピンチアウト → 全画面 / ピンチイン → 枠あり表示
+   全画面切替(Fキー)
    ========================================================= */
-let pinchStartDist = null;
-
-function touchDist(t) {
-  const dx = t[0].clientX - t[1].clientX;
-  const dy = t[0].clientY - t[1].clientY;
-  return Math.hypot(dx, dy);
-}
-
-document.addEventListener('touchstart', e => {
-  if (e.touches.length === 2) {
-    pinchStartDist = touchDist(e.touches);
-  }
-}, { passive: false });
-
-document.addEventListener('touchmove', e => {
-  if (e.touches.length === 2 && pinchStartDist !== null) {
-    e.preventDefault(); // ブラウザ標準のズームを抑止
-    const dist = touchDist(e.touches);
-    const ratio = dist / pinchStartDist;
-    if (ratio > 1.25) {
-      document.body.classList.add('fullscreen');
-      pinchStartDist = null;
-    } else if (ratio < 0.8) {
-      document.body.classList.remove('fullscreen');
-      pinchStartDist = null;
-    }
-  }
-}, { passive: false });
-
-document.addEventListener('touchend', () => { pinchStartDist = null; });
-
-// PCでも確認できるようFキーで切替
 document.addEventListener('keydown', e => {
   if (e.code === 'KeyF') {
     const tag = document.activeElement.tagName;
