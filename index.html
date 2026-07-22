@@ -13,6 +13,7 @@
     font-family:-apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
   }
 
+  /* ---- iPhone frame ---- */
   .phone {
     position:relative;
     width:390px; height:844px;
@@ -30,26 +31,6 @@
     display:flex;
     flex-direction:column;
   }
-  .island {
-    position:absolute;
-    top:14px; left:50%; transform:translateX(-50%);
-    width:120px; height:34px;
-    background:#000;
-    border-radius:20px;
-    z-index:50;
-  }
-  .statusbar {
-    height:54px;
-    display:flex; align-items:flex-end; justify-content:space-between;
-    padding:0 28px 8px 28px;
-    color:#fff;
-    font-size:15px;
-    font-weight:600;
-    letter-spacing:0.3px;
-  }
-  .statusbar .icons { display:flex; align-items:center; gap:6px; }
-  .statusbar svg { display:block; }
-
   .navbar {
     display:flex; align-items:center; justify-content:space-between;
     padding:14px 18px 14px 18px;
@@ -67,7 +48,6 @@
     display:flex; align-items:center; justify-content:center;
     gap:14px;
     padding:4px 0 18px 0;
-    color:#8e8e93;
     font-size:13px;
     font-weight:600;
   }
@@ -113,9 +93,7 @@
     font-weight:500;
     transition:opacity .18s ease, transform .18s ease;
   }
-  .card.result {
-    background:linear-gradient(135deg,#103a73,#0a2d57);
-  }
+  .card.result { background:linear-gradient(135deg,#103a73,#0a2d57); }
   .card.result .lang-label { color:#7fb8ff; }
   .card .speaker {
     position:absolute;
@@ -125,11 +103,7 @@
   }
   .card.result .speaker { color:#7fb8ff; }
 
-  .placeholder {
-    color:#48484a;
-    font-size:15px;
-    font-weight:500;
-  }
+  .placeholder { color:#48484a; font-size:15px; font-weight:500; }
 
   .rec-cursor {
     display:inline-block;
@@ -138,41 +112,19 @@
     margin-left:1px;
     animation:blink 0.9s steps(1) infinite;
   }
-
   .listening-tag {
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    font-size:11px;
-    font-weight:700;
-    color:#ff453a;
-    margin-top:10px;
-    letter-spacing:0.3px;
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:11px; font-weight:700; color:#ff453a;
+    margin-top:10px; letter-spacing:0.3px;
   }
   .listening-tag .dot {
-    width:7px; height:7px;
-    background:#ff453a;
-    border-radius:50%;
+    width:7px; height:7px; background:#ff453a; border-radius:50%;
     animation:blink 1.1s infinite;
   }
-  @keyframes blink {
-    0%,100% { opacity:1; } 50% { opacity:0.25; }
-  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
 
-  .detecting-tag {
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    font-size:13px;
-    font-weight:600;
-    color:#8e8e93;
-  }
-  .lang-pill.detecting {
-    color:#8e8e93;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-  }
+  .detecting-tag { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#8e8e93; }
+  .lang-pill.detecting { color:#8e8e93; display:inline-flex; align-items:center; gap:6px; }
   .lang-pill .mini-spinner {
     width:10px; height:10px;
     border:1.6px solid rgba(142,142,147,0.3);
@@ -180,19 +132,9 @@
     border-radius:50%;
     animation:spin .8s linear infinite;
   }
-  .lang-pill.confirmed {
-    color:#0a84ff;
-    border-color:#0a3a66;
-    background:#102338;
-  }
-  .translating-tag {
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    font-size:13px;
-    font-weight:600;
-    color:#7fb8ff;
-  }
+  .lang-pill.confirmed { color:#0a84ff; border-color:#0a3a66; background:#102338; }
+
+  .translating-tag { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#7fb8ff; }
   .spinner {
     width:14px; height:14px;
     border:2px solid rgba(127,184,255,0.25);
@@ -200,94 +142,226 @@
     border-radius:50%;
     animation:spin .8s linear infinite;
   }
-  @keyframes spin { to { transform:rotate(360deg); } }
+  @keyframes spin { to{transform:rotate(360deg)} }
 
+  /* 隠しボタン(日本語訳カード下) */
+  #hiddenTrigger {
+    width:100%; height:48px;
+    background:transparent; border:none; padding:0; margin:0;
+    -webkit-tap-highlight-color:transparent; cursor:pointer;
+  }
+
+  /* ---- mic area ---- */
   .mic-area {
     padding:14px 22px 30px 22px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:12px;
+    display:flex; flex-direction:column; align-items:center; gap:12px;
   }
-  .wave-wrap {
-    width:100%;
-    height:64px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  canvas#wave {
-    width:100%;
-    height:64px;
-  }
+  .wave-wrap { width:100%; height:64px; display:flex; align-items:center; justify-content:center; }
+  canvas#wave { width:100%; height:64px; }
   .mic-status {
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:0.4px;
-    color:#636366;
-    height:14px;
-    visibility:hidden;
+    font-size:11px; font-weight:700; letter-spacing:0.4px;
+    color:#636366; height:14px; visibility:hidden;
   }
   .mic-status.live { color:#ff453a; }
-
   .mic-btn {
-    width:64px; height:64px;
-    border-radius:50%;
+    width:64px; height:64px; border-radius:50%;
     background:linear-gradient(135deg,#3a3a3c,#1c1c1e);
     display:flex; align-items:center; justify-content:center;
     box-shadow:0 4px 18px rgba(0,0,0,0.4);
-    border:none;
-    cursor:pointer;
+    border:none; cursor:pointer;
     transition:background .25s ease, box-shadow .25s ease;
   }
-  .mic-btn.active {
-    background:linear-gradient(135deg,#ff453a,#d70015);
-    box-shadow:0 4px 18px rgba(255,69,58,0.45);
-  }
+  .mic-btn.active { background:linear-gradient(135deg,#ff453a,#d70015); box-shadow:0 4px 18px rgba(255,69,58,0.45); }
   .mic-btn svg { width:26px; height:26px; color:#fff; }
+  .home-indicator { width:134px; height:5px; background:#fff; border-radius:3px; opacity:0.85; margin:6px auto 4px auto; }
 
-  .home-indicator {
-    width:134px; height:5px;
-    background:#fff;
-    border-radius:3px;
-    opacity:0.85;
-    margin:6px auto 4px auto;
-  }
-
-  .start-bar {
-    padding:0 16px 12px 16px;
-  }
+  /* ---- start button ---- */
+  .start-bar { padding:0 16px 12px 16px; }
   .start-btn {
-    width:100%;
-    background:#0a84ff;
-    color:#fff;
-    border:none;
-    border-radius:14px;
-    padding:13px 0;
-    font-size:15px;
-    font-weight:700;
-    letter-spacing:0.3px;
-    cursor:pointer;
-    transition:opacity .2s ease;
+    width:100%; background:#0a84ff; color:#fff;
+    border:none; border-radius:14px; padding:13px 0;
+    font-size:15px; font-weight:700; letter-spacing:0.3px;
+    cursor:pointer; transition:opacity .2s ease;
   }
   .start-btn:active { opacity:0.7; }
   .start-btn:disabled { opacity:0.4; cursor:default; }
 
-  /* 日本語訳カード下の隠しトリガー */
-  #hiddenTrigger {
+  /* ======================================
+     コントロールパネル(画面外オーバーレイ)
+     ====================================== */
+  #cpOverlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.55);
+    backdrop-filter:blur(4px);
+    z-index:200;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  #cpOverlay.open { display:flex; }
+
+  #cpPanel {
+    background:#1c1c1e;
+    border-radius:20px 20px 0 0;
+    padding:20px 22px 40px 22px;
     width:100%;
-    height:48px;
-    background:transparent;
-    border:none;
-    padding:0;
-    margin:0;
-    -webkit-tap-highlight-color:transparent;
+    max-width:430px;
+    transform:translateY(100%);
+    transition:transform .35s cubic-bezier(.32,1,.23,1);
+  }
+  #cpOverlay.open #cpPanel { transform:translateY(0); }
+
+  .cp-handle {
+    width:36px; height:4px; background:#48484a; border-radius:2px;
+    margin:0 auto 18px auto;
+  }
+  .cp-title {
+    font-size:13px; font-weight:700; color:#8e8e93;
+    letter-spacing:0.5px; text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  /* セクション */
+  .cp-section { margin-bottom:20px; }
+  .cp-section-label {
+    font-size:11px; font-weight:700; color:#636366;
+    letter-spacing:0.5px; text-transform:uppercase;
+    margin-bottom:10px;
+  }
+
+  /* 言語切替 */
+  .cp-lang-btns { display:flex; gap:10px; }
+  .cp-lang-btn {
+    flex:1; padding:10px 0; border-radius:12px;
+    background:#2c2c2e; border:2px solid transparent;
+    color:#e5e5ea; font-size:14px; font-weight:600;
+    cursor:pointer; transition:all .2s;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+  }
+  .cp-lang-btn .sub { font-size:10px; color:#8e8e93; font-weight:500; }
+  .cp-lang-btn.active { border-color:#0a84ff; background:#102338; color:#0a84ff; }
+  .cp-lang-btn.active .sub { color:#7fb8ff; }
+
+  /* ローディング時間スライダー */
+  .cp-slider-row {
+    display:flex; align-items:center; gap:12px;
+  }
+  .cp-slider {
+    flex:1;
+    -webkit-appearance:none; appearance:none;
+    height:4px; border-radius:2px;
+    background:#3a3a3c;
+    outline:none;
+  }
+  .cp-slider::-webkit-slider-thumb {
+    -webkit-appearance:none;
+    width:22px; height:22px;
+    border-radius:50%; background:#fff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.4);
+    cursor:pointer;
+  }
+  .cp-slider-val {
+    font-size:13px; font-weight:700; color:#e5e5ea;
+    min-width:36px; text-align:right;
+  }
+
+  /* キーボード操作ガイド */
+  .cp-keys { display:flex; flex-direction:column; gap:8px; }
+  .cp-key-row {
+    display:flex; align-items:center; justify-content:space-between;
+    background:#2c2c2e; border-radius:10px; padding:10px 14px;
+  }
+  .cp-key-desc { font-size:13px; color:#e5e5ea; font-weight:500; }
+  .kbd {
+    display:inline-flex; align-items:center; justify-content:center;
+    background:#3a3a3c; border:1px solid #555;
+    border-radius:6px; padding:2px 8px;
+    font-size:12px; font-weight:700; color:#e5e5ea;
+    min-width:28px;
+  }
+  .cp-close-btn {
+    width:100%; margin-top:16px; padding:13px 0;
+    background:#2c2c2e; border:none; border-radius:14px;
+    color:#e5e5ea; font-size:15px; font-weight:700;
     cursor:pointer;
   }
 </style>
 </head>
 <body>
 
+<!-- ======= コントロールパネル(モーダル) ======= -->
+<div id="cpOverlay">
+  <div id="cpPanel">
+    <div class="cp-handle"></div>
+    <div class="cp-title">コントロールパネル</div>
+
+    <div class="cp-section">
+      <div class="cp-section-label">🌐 言語</div>
+      <div class="cp-lang-btns">
+        <button class="cp-lang-btn active" id="btnLangHi" onclick="setLang('hi')">
+          ヒンディー語<span class="sub">Hindi</span>
+        </button>
+        <button class="cp-lang-btn" id="btnLangTw" onclick="setLang('tw')">
+          トゥイ語<span class="sub">Twi</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="cp-section">
+      <div class="cp-section-label">⏱ 言語検出の時間</div>
+      <div class="cp-slider-row">
+        <input type="range" class="cp-slider" id="sliderDetect" min="300" max="4000" step="100" value="1200">
+        <div class="cp-slider-val" id="valDetect">1.2s</div>
+      </div>
+    </div>
+
+    <div class="cp-section">
+      <div class="cp-section-label">⏱ 音声認識(入力表示)の時間</div>
+      <div class="cp-slider-row">
+        <input type="range" class="cp-slider" id="sliderType" min="500" max="8000" step="100" value="4000">
+        <div class="cp-slider-val" id="valType">4.0s</div>
+      </div>
+    </div>
+
+    <div class="cp-section">
+      <div class="cp-section-label">⏱ 翻訳ローディングの時間</div>
+      <div class="cp-slider-row">
+        <input type="range" class="cp-slider" id="sliderTranslate" min="200" max="5000" step="100" value="1000">
+        <div class="cp-slider-val" id="valTranslate">1.0s</div>
+      </div>
+    </div>
+
+    <div class="cp-section">
+      <div class="cp-section-label">⌨ キーボード操作</div>
+      <div class="cp-keys">
+        <div class="cp-key-row">
+          <div class="cp-key-desc">翻訳スタート(フレーズ①)</div>
+          <span class="kbd">Space</span>
+        </div>
+        <div class="cp-key-row">
+          <div class="cp-key-desc">翻訳スタート(フレーズ②)</div>
+          <span class="kbd">H</span>
+        </div>
+        <div class="cp-key-row">
+          <div class="cp-key-desc">次のステージへスキップ</div>
+          <span class="kbd">→</span>
+        </div>
+        <div class="cp-key-row">
+          <div class="cp-key-desc">リセット</div>
+          <span class="kbd">R</span>
+        </div>
+        <div class="cp-key-row">
+          <div class="cp-key-desc">パネルを開く/閉じる</div>
+          <span class="kbd">P</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="cp-close-btn" onclick="closePanel()">閉じる</button>
+  </div>
+</div>
+
+<!-- ======= iPhone ======= -->
 <div class="phone">
   <div class="screen">
 
@@ -313,7 +387,7 @@
 
     <div class="content">
 
-      <div class="card source" id="sourceCard">
+      <div class="card source">
         <div class="speaker">
           <svg viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H3V15H6L11 19V5Z" fill="currentColor"/><path d="M15.5 8.5C16.5 9.5 17 10.7 17 12C17 13.3 16.5 14.5 15.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </div>
@@ -322,7 +396,7 @@
         <div class="listening-tag" id="recordedTag" style="display:none;"><span class="dot"></span>RECORDED</div>
       </div>
 
-      <div class="card result" id="resultCard">
+      <div class="card result">
         <div class="speaker">
           <svg viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H3V15H6L11 19V5Z" fill="currentColor"/><path d="M15.5 8.5C16.5 9.5 17 10.7 17 12C17 13.3 16.5 14.5 15.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </div>
@@ -330,15 +404,14 @@
         <div class="text" id="resultText"><span class="placeholder">―</span></div>
       </div>
 
+      <!-- 隠しボタン(日本語訳カード下) -->
       <button id="hiddenTrigger" aria-hidden="true"></button>
 
     </div>
 
     <div class="mic-area">
-      <div class="wave-wrap">
-        <canvas id="wave"></canvas>
-      </div>
-      <div class="mic-status" id="micStatus">マイク未使用(タップして許可)</div>
+      <div class="wave-wrap"><canvas id="wave"></canvas></div>
+      <div class="mic-status" id="micStatus">マイク未使用</div>
       <button class="mic-btn" id="micBtn">
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" fill="currentColor"/><path d="M17 11C17 13.76 14.76 16 12 16C9.24 16 7 13.76 7 11H5C5 14.53 7.61 17.43 11 17.92V21H13V17.92C16.39 17.43 19 14.53 19 11H17Z" fill="currentColor"/></svg>
       </button>
@@ -350,243 +423,307 @@
 
 <script>
 /* =========================================================
-   1) 翻訳フロー
-   ボタン → 言語認識中 → 言語確定(ヒンディー語) → 音声テキスト表示 → 翻訳中 → 日本語表示
+   フレーズデータ
    ========================================================= */
-const SOURCE_HI   = "वे बेरहमी से लोगों को मार डालते हैं।";
-const RESULT_JA   = "あいつら平気で人を殺す。";
-const DETECTED_LANG_LABEL = "ヒンディー語";
+const PHRASES = {
+  hi: {
+    langLabel: 'ヒンディー語',
+    p1: { src: 'वे बेरहमी से लोगों को मार डालते हैं।', ja: 'あいつら平気で人を殺す。' },
+    p2: { src: 'वह लोगों को नर्क में ले जाता है।',     ja: '人を地獄に連れていく。' },
+  },
+  tw: {
+    langLabel: 'トゥイ語',
+    p1: { src: 'wokum nnipa a ɛnyɛ den.',   ja: 'あいつら平気で人を殺す。' },
+    p2: { src: 'wɔde nnipa kɔ hell.',        ja: '人を地獄に連れていく。' },
+  },
+};
 
-// 隠しボタン用の別フレーズ
-const SOURCE_HI_ALT = "वह लोगों को नर्क में ले जाता है।";
-const RESULT_JA_ALT = "人を地獄に連れていく。";
+let currentLang = 'hi';
 
-const startBtn        = document.getElementById('startBtn');
-const sourceText      = document.getElementById('sourceText');
-const resultText      = document.getElementById('resultText');
-const recordedTag     = document.getElementById('recordedTag');
-const langPillSource  = document.getElementById('langPillSource');
-const sourceLangLabel = document.getElementById('sourceLangLabel');
-const hiddenTrigger   = document.getElementById('hiddenTrigger');
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btnLangHi').classList.toggle('active', lang === 'hi');
+  document.getElementById('btnLangTw').classList.toggle('active', lang === 'tw');
+}
 
-let isRunning = false;
+/* =========================================================
+   コントロールパネル
+   ========================================================= */
+const cpOverlay = document.getElementById('cpOverlay');
+
+function openPanel()  { cpOverlay.classList.add('open'); }
+function closePanel() { cpOverlay.classList.remove('open'); }
+
+cpOverlay.addEventListener('click', e => { if (e.target === cpOverlay) closePanel(); });
+
+// スライダー
+function setupSlider(sliderId, valId, divisor) {
+  const sl = document.getElementById(sliderId);
+  const vl = document.getElementById(valId);
+  const update = () => { vl.textContent = (sl.value / 1000).toFixed(1) + 's'; };
+  sl.addEventListener('input', update);
+  update();
+}
+setupSlider('sliderDetect',    'valDetect',    1000);
+setupSlider('sliderType',      'valType',      1000);
+setupSlider('sliderTranslate', 'valTranslate', 1000);
+
+function getDurations() {
+  return {
+    detect:    parseInt(document.getElementById('sliderDetect').value),
+    type:      parseInt(document.getElementById('sliderType').value),
+    translate: parseInt(document.getElementById('sliderTranslate').value),
+  };
+}
+
+/* =========================================================
+   翻訳フロー
+   ========================================================= */
+const startBtn       = document.getElementById('startBtn');
+const sourceText     = document.getElementById('sourceText');
+const resultText     = document.getElementById('resultText');
+const recordedTag    = document.getElementById('recordedTag');
+const langPillSource = document.getElementById('langPillSource');
+const sourceLangLabel= document.getElementById('sourceLangLabel');
+const hiddenTrigger  = document.getElementById('hiddenTrigger');
+
+const CURSOR = '<span class="rec-cursor">|</span>';
 let activeTimers = [];
+let stage = 0; // 0=idle 1=detecting 2=typing 3=translating 4=done
 
 function clearAllTimers() {
-  activeTimers.forEach(t => clearTimeout(t));
+  activeTimers.forEach(t => { clearTimeout(t); clearInterval(t); });
   activeTimers = [];
 }
 
 function setCardText(el, html) {
   el.style.opacity = 0;
   el.style.transform = 'translateY(4px)';
-  setTimeout(() => {
+  const t = setTimeout(() => {
     el.innerHTML = html;
     el.style.opacity = 1;
     el.style.transform = 'translateY(0)';
   }, 180);
+  activeTimers.push(t);
 }
 
-// 音声認識中のカーソル(点滅バー)
-const CURSOR = '<span class="rec-cursor">|</span>';
-
-// 単語を少しずつ追加して「喋りながら認識されている」演出を作る
+let typeInterval = null;
 function typeWords(el, fullText, totalDurationMs, onDone) {
+  if (typeInterval) clearInterval(typeInterval);
   const words = fullText.split(' ');
   let i = 0;
   const interval = totalDurationMs / words.length;
-
   el.style.opacity = 1;
   el.style.transform = 'translateY(0)';
   el.innerHTML = CURSOR;
 
-  const timer = setInterval(() => {
+  typeInterval = setInterval(() => {
     i++;
-    const partial = words.slice(0, i).join(' ');
-    el.innerHTML = partial + CURSOR;
-
+    el.innerHTML = words.slice(0, i).join(' ') + CURSOR;
     if (i >= words.length) {
-      clearInterval(timer);
-      activeTimers.push(setTimeout(() => {
-        el.innerHTML = fullText;
-        if (onDone) onDone();
-      }, 250));
+      clearInterval(typeInterval);
+      const t = setTimeout(() => { el.innerHTML = fullText; if(onDone) onDone(); }, 250);
+      activeTimers.push(t);
     }
   }, interval);
-  activeTimers.push(timer);
+  activeTimers.push(typeInterval);
 }
 
 function resetUI() {
+  stage = 0;
   recordedTag.style.display = 'none';
-  setCardText(resultText, '<span class="placeholder">―</span>');
+  resultText.style.opacity = 1;
+  resultText.style.transform = 'translateY(0)';
+  resultText.innerHTML = '<span class="placeholder">―</span>';
   sourceText.innerHTML = '';
   sourceLangLabel.textContent = '言語検出中';
   langPillSource.classList.remove('confirmed');
-  langPillSource.classList.add('detecting');
-  langPillSource.innerHTML = '<span class="mini-spinner"></span>言語を検出中…';
+  langPillSource.innerHTML = '言語を自動検出';
 }
 
-function runTranslationFlow(sourcePhrase, resultPhrase) {
-  // 実行中でも強制的にリセットしてやり直す(ロックしない)
-  clearAllTimers();
-  isRunning = true;
+// 現在のステージを記憶して途中スキップできるよう、フローをステップ関数として定義
+let pendingPhrase = null; // {src, ja, langLabel}
 
+function goStage1(phrase) {
+  pendingPhrase = phrase;
+  clearAllTimers();
+  resetUI();
+  stage = 1;
   startBtn.disabled = true;
   startBtn.textContent = '言語を認識中...';
-  resetUI();
+  langPillSource.classList.add('detecting');
+  langPillSource.innerHTML = '<span class="mini-spinner"></span>言語を検出中…';
 
-  // ① まず「言語を検出中」の状態をしばらく見せる(マイク入力を解析しているイメージ)
-  activeTimers.push(setTimeout(() => {
-
-    // ② 言語確定 → ヒンディー語と表示を切り替え
-    langPillSource.classList.remove('detecting');
-    langPillSource.classList.add('confirmed');
-    langPillSource.textContent = DETECTED_LANG_LABEL;
-    sourceLangLabel.textContent = DETECTED_LANG_LABEL;
-    startBtn.textContent = '認識中...';
-
-    // ③ ヒンディー語を約4秒かけて単語ごとに表示(発話中の音声認識を再現)
-    activeTimers.push(setTimeout(() => {
-      typeWords(sourceText, sourcePhrase, 4000, () => {
-        recordedTag.style.display = 'inline-flex';
-        startBtn.textContent = '翻訳中...';
-
-        // ④ 翻訳中表示(日本語カード側)
-        setCardText(resultText, '<span class="translating-tag"><span class="spinner"></span>翻訳中…</span>');
-
-        // ⑤ 約1秒後に日本語訳を表示
-        activeTimers.push(setTimeout(() => {
-          setCardText(resultText, resultPhrase);
-          startBtn.disabled = false;
-          startBtn.textContent = '▶ 翻訳をスタート';
-          isRunning = false;
-        }, 1000));
-      });
-    }, 300));
-
-  }, 1200)); // 言語検出にかかる時間
+  const { detect } = getDurations();
+  activeTimers.push(setTimeout(() => goStage2(), detect));
 }
 
+function goStage2() {
+  if (!pendingPhrase) return;
+  clearAllTimers();
+  stage = 2;
+  const { langLabel, src } = pendingPhrase;
+  langPillSource.classList.remove('detecting');
+  langPillSource.classList.add('confirmed');
+  langPillSource.textContent = langLabel;
+  sourceLangLabel.textContent = langLabel;
+  startBtn.textContent = '認識中...';
+
+  const { type } = getDurations();
+  activeTimers.push(setTimeout(() => {
+    typeWords(sourceText, src, type, () => goStage3());
+  }, 200));
+}
+
+function goStage3() {
+  if (!pendingPhrase) return;
+  clearAllTimers();
+  stage = 3;
+  recordedTag.style.display = 'inline-flex';
+  startBtn.textContent = '翻訳中...';
+  setCardText(resultText, '<span class="translating-tag"><span class="spinner"></span>翻訳中…</span>');
+
+  const { translate } = getDurations();
+  activeTimers.push(setTimeout(() => goStage4(), translate));
+}
+
+function goStage4() {
+  if (!pendingPhrase) return;
+  clearAllTimers();
+  stage = 4;
+  setCardText(resultText, pendingPhrase.ja);
+  startBtn.disabled = false;
+  startBtn.textContent = '▶ 翻訳をスタート';
+}
+
+// キーボードの→でステージをスキップ
+function skipToNextStage() {
+  if (stage === 0) return;
+  if (stage === 1) { goStage2(); return; }
+  if (stage === 2) { goStage3(); return; }
+  if (stage === 3) { goStage4(); return; }
+}
+
+/* ボタンイベント */
 startBtn.addEventListener('click', () => {
-  runTranslationFlow(SOURCE_HI, RESULT_JA);
+  const p = PHRASES[currentLang];
+  goStage1({ ...p.p1, langLabel: p.langLabel });
 });
 
-// 画面上部の隠しトリガー(タップで別フレーズを翻訳)
 hiddenTrigger.addEventListener('click', () => {
-  runTranslationFlow(SOURCE_HI_ALT, RESULT_JA_ALT);
+  openPanel();
 });
 
 /* =========================================================
-   2) 波形(実マイク入力 / Web Audio API)
+   キーボード操作
    ========================================================= */
-const canvas = document.getElementById('wave');
-const ctx = canvas.getContext('2d');
-const micBtn = document.getElementById('micBtn');
+document.addEventListener('keydown', e => {
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+  if (e.code === 'Space') {
+    e.preventDefault();
+    const p = PHRASES[currentLang];
+    goStage1({ ...p.p1, langLabel: p.langLabel });
+  }
+  if (e.code === 'KeyH') {
+    const p = PHRASES[currentLang];
+    goStage1({ ...p.p2, langLabel: p.langLabel });
+  }
+  if (e.code === 'ArrowRight') { e.preventDefault(); skipToNextStage(); }
+  if (e.code === 'KeyR') { clearAllTimers(); resetUI(); startBtn.disabled = false; startBtn.textContent = '▶ 翻訳をスタート'; }
+  if (e.code === 'KeyP') { cpOverlay.classList.contains('open') ? closePanel() : openPanel(); }
+});
+
+/* =========================================================
+   波形(実マイク / Web Audio API)
+   ========================================================= */
+const canvas  = document.getElementById('wave');
+const ctx     = canvas.getContext('2d');
+const micBtn  = document.getElementById('micBtn');
 const micStatus = document.getElementById('micStatus');
 
 let audioCtx, analyser, dataArray, source, stream;
 let micActive = false;
-
 const BAR_COUNT = 46;
 let bars = new Array(BAR_COUNT).fill(0.08);
 
 function resize() {
   const rect = canvas.parentElement.getBoundingClientRect();
-  canvas.width = rect.width * devicePixelRatio;
+  canvas.width  = rect.width  * devicePixelRatio;
   canvas.height = rect.height * devicePixelRatio;
-  canvas.style.width = rect.width + 'px';
+  canvas.style.width  = rect.width  + 'px';
   canvas.style.height = rect.height + 'px';
-  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
 }
 resize();
 window.addEventListener('resize', resize);
 
 async function startMic() {
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream   = await navigator.mediaDevices.getUserMedia({ audio: true });
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 256;
     analyser.smoothingTimeConstant = 0.75;
-    source = audioCtx.createMediaStreamSource(stream);
+    source   = audioCtx.createMediaStreamSource(stream);
     source.connect(analyser);
     dataArray = new Uint8Array(analyser.frequencyBinCount);
-
     micActive = true;
     micBtn.classList.add('active');
     micStatus.textContent = 'マイク入力中(現場音声)';
     micStatus.classList.add('live');
-  } catch (err) {
+  } catch(err) {
     micStatus.textContent = 'マイクへのアクセスが許可されませんでした';
     console.error(err);
   }
 }
 
 function stopMic() {
-  if (stream) stream.getTracks().forEach(t => t.stop());
+  if (stream)   stream.getTracks().forEach(t => t.stop());
   if (audioCtx) audioCtx.close();
   micActive = false;
   micBtn.classList.remove('active');
-  micStatus.textContent = 'マイク未使用(タップして許可)';
+  micStatus.textContent = 'マイク未使用';
   micStatus.classList.remove('live');
 }
 
-micBtn.addEventListener('click', () => {
-  if (micActive) stopMic();
-  else startMic();
-});
-
-function drawIdle() {
-  for (let i=0;i<BAR_COUNT;i++){
-    bars[i] += (Math.random()-0.5) * 0.04;
-    bars[i] = Math.max(0.06, Math.min(0.18, bars[i]));
-  }
-}
-
-function drawFromMic() {
-  analyser.getByteFrequencyData(dataArray);
-  const step = Math.floor(dataArray.length / BAR_COUNT);
-  for (let i=0; i<BAR_COUNT; i++) {
-    let sum = 0;
-    for (let j=0; j<step; j++) sum += dataArray[i*step + j];
-    const avg = sum / step / 255;
-    const target = Math.max(0.06, Math.min(1, avg * 1.6));
-    bars[i] += (target - bars[i]) * 0.45;
-  }
-}
+micBtn.addEventListener('click', () => { micActive ? stopMic() : startMic(); });
 
 function render() {
-  const w = canvas.width / devicePixelRatio;
+  const w = canvas.width  / devicePixelRatio;
   const h = canvas.height / devicePixelRatio;
-  ctx.clearRect(0,0,w,h);
+  ctx.clearRect(0, 0, w, h);
 
-  if (micActive) drawFromMic();
-  else drawIdle();
+  if (micActive && analyser) {
+    analyser.getByteFrequencyData(dataArray);
+    const step = Math.floor(dataArray.length / BAR_COUNT);
+    for (let i = 0; i < BAR_COUNT; i++) {
+      let sum = 0;
+      for (let j = 0; j < step; j++) sum += dataArray[i*step+j];
+      const target = Math.max(0.06, Math.min(1, (sum/step/255) * 1.6));
+      bars[i] += (target - bars[i]) * 0.45;
+    }
+  } else {
+    for (let i = 0; i < BAR_COUNT; i++) {
+      bars[i] += (Math.random()-0.5) * 0.04;
+      bars[i] = Math.max(0.06, Math.min(0.18, bars[i]));
+    }
+  }
 
   const gap = 3.2;
   const barWidth = (w - gap*(BAR_COUNT-1)) / BAR_COUNT;
-
-  for (let i=0; i<BAR_COUNT; i++) {
-    const amp = bars[i];
-    const barH = h * 0.12 + amp * h * 0.8;
-    const x = i * (barWidth + gap);
-    const y = (h - barH) / 2;
-
+  for (let i = 0; i < BAR_COUNT; i++) {
+    const barH = h*0.12 + bars[i]*h*0.8;
+    const x = i*(barWidth+gap), y = (h-barH)/2;
     const grad = ctx.createLinearGradient(0,y,0,y+barH);
-    if (micActive) {
-      grad.addColorStop(0, '#ff6b5e');
-      grad.addColorStop(1, '#ff453a');
-    } else {
-      grad.addColorStop(0, '#48484a');
-      grad.addColorStop(1, '#3a3a3c');
-    }
+    if (micActive) { grad.addColorStop(0,'#ff6b5e'); grad.addColorStop(1,'#ff453a'); }
+    else           { grad.addColorStop(0,'#48484a'); grad.addColorStop(1,'#3a3a3c'); }
     ctx.fillStyle = grad;
-
     ctx.beginPath();
     ctx.roundRect(x, y, barWidth, barH, barWidth/2);
     ctx.fill();
   }
-
   requestAnimationFrame(render);
 }
 render();
