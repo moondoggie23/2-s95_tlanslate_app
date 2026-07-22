@@ -12,26 +12,48 @@
   * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
   html,body {
     width:100%; height:100%;
-    background:#000;
+    background:#0b0b0d;
+    display:flex; align-items:center; justify-content:center;
     font-family:-apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
     overscroll-behavior:none;
     -webkit-user-select:none;
     user-select:none;
+    touch-action:none;
   }
 
-  /* ---- full screen (外枠なし) ---- */
+  /* ---- iPhone frame ---- */
   .phone {
-    width:100%;
-    height:100%;
-    height:100dvh;
+    position:relative;
+    width:390px; height:844px;
+    max-width:100vw;
+    max-height:100dvh;
+    background:#000;
+    border-radius:55px;
+    padding:14px;
+    box-shadow:0 0 0 2px #2a2a2a, 0 20px 60px rgba(0,0,0,0.6);
+    transition:all .35s cubic-bezier(.32,1,.23,1);
   }
   .screen {
     position:relative;
     width:100%; height:100%;
     background:linear-gradient(180deg,#1c1c1e 0%, #000 100%);
+    border-radius:42px;
     overflow:hidden;
     display:flex;
     flex-direction:column;
+    transition:border-radius .35s cubic-bezier(.32,1,.23,1);
+  }
+
+  /* ---- 全画面モード(ピンチアウトで切替) ---- */
+  body.fullscreen .phone {
+    width:100%;
+    height:100dvh;
+    border-radius:0;
+    padding:0;
+    box-shadow:none;
+  }
+  body.fullscreen .screen {
+    border-radius:0;
   }
   .navbar {
     display:flex; align-items:center; justify-content:space-between;
@@ -195,13 +217,14 @@
      コントロールパネル(画面外オーバーレイ)
      ====================================== */
   #cpOverlay {
-    position:fixed; inset:0;
+    position:absolute; inset:0;
     background:rgba(0,0,0,0.55);
     backdrop-filter:blur(4px);
     z-index:200;
     display:none;
     align-items:flex-end;
     justify-content:center;
+    border-radius:inherit;
   }
   #cpOverlay.open { display:flex; }
 
@@ -211,8 +234,7 @@
     padding:12px 16px 20px 16px;
     padding-bottom:max(20px, env(safe-area-inset-bottom));
     width:100%;
-    max-width:430px;
-    max-height:60dvh;
+    max-height:70%;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
     transform:translateY(100%);
@@ -314,6 +336,10 @@
 <body>
 
 <!-- ======= コントロールパネル(モーダル) ======= -->
+<!-- ======= iPhone ======= -->
+<div class="phone">
+  <div class="screen">
+
 <div id="cpOverlay">
   <div id="cpPanel">
     <div class="cp-handle"></div>
@@ -395,6 +421,10 @@
           <div class="cp-key-desc">パネルを開く/閉じる</div>
           <span class="kbd">P</span>
         </div>
+        <div class="cp-key-row">
+          <div class="cp-key-desc">全画面 切替(ピンチでも可)</div>
+          <span class="kbd">F</span>
+        </div>
       </div>
     </div>
 
@@ -402,9 +432,6 @@
   </div>
 </div>
 
-<!-- ======= iPhone ======= -->
-<div class="phone">
-  <div class="screen">
 
     <div class="navbar">
       <div class="icon-btn">
@@ -711,6 +738,50 @@ document.addEventListener('keydown', e => {
   if (e.code === 'Enter') { e.preventDefault(); if (stage === 3) goStage4(); }
   if (e.code === 'KeyR') { clearAllTimers(); resetUI(); startBtn.disabled = false; startBtn.textContent = '▶ 翻訳をスタート'; }
   if (e.code === 'KeyP') { cpOverlay.classList.contains('open') ? closePanel() : openPanel(); }
+});
+
+/* =========================================================
+   ピンチ操作で全画面切替
+   ピンチアウト → 全画面 / ピンチイン → 枠あり表示
+   ========================================================= */
+let pinchStartDist = null;
+
+function touchDist(t) {
+  const dx = t[0].clientX - t[1].clientX;
+  const dy = t[0].clientY - t[1].clientY;
+  return Math.hypot(dx, dy);
+}
+
+document.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    pinchStartDist = touchDist(e.touches);
+  }
+}, { passive: false });
+
+document.addEventListener('touchmove', e => {
+  if (e.touches.length === 2 && pinchStartDist !== null) {
+    e.preventDefault(); // ブラウザ標準のズームを抑止
+    const dist = touchDist(e.touches);
+    const ratio = dist / pinchStartDist;
+    if (ratio > 1.25) {
+      document.body.classList.add('fullscreen');
+      pinchStartDist = null;
+    } else if (ratio < 0.8) {
+      document.body.classList.remove('fullscreen');
+      pinchStartDist = null;
+    }
+  }
+}, { passive: false });
+
+document.addEventListener('touchend', () => { pinchStartDist = null; });
+
+// PCでも確認できるようFキーで切替
+document.addEventListener('keydown', e => {
+  if (e.code === 'KeyF') {
+    const tag = document.activeElement.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    document.body.classList.toggle('fullscreen');
+  }
 });
 
 /* =========================================================
