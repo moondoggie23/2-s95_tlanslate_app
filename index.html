@@ -2,31 +2,33 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="翻訳">
+<meta name="theme-color" content="#000000">
 <title>翻訳アプリ モックアップ</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
   html,body {
     width:100%; height:100%;
-    background:#0b0b0d;
-    display:flex; align-items:center; justify-content:center;
+    background:#000;
     font-family:-apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+    overscroll-behavior:none;
+    -webkit-user-select:none;
+    user-select:none;
   }
 
-  /* ---- iPhone frame ---- */
+  /* ---- full screen (外枠なし) ---- */
   .phone {
-    position:relative;
-    width:390px; height:844px;
-    background:#000;
-    border-radius:55px;
-    padding:14px;
-    box-shadow:0 0 0 2px #2a2a2a, 0 20px 60px rgba(0,0,0,0.6);
+    width:100%;
+    height:100%;
+    height:100dvh;
   }
   .screen {
     position:relative;
     width:100%; height:100%;
     background:linear-gradient(180deg,#1c1c1e 0%, #000 100%);
-    border-radius:42px;
     overflow:hidden;
     display:flex;
     flex-direction:column;
@@ -155,7 +157,8 @@
 
   /* ---- mic area ---- */
   .mic-area {
-    padding:14px 22px 30px 22px;
+    padding:14px 22px 20px 22px;
+    padding-bottom:max(20px, calc(env(safe-area-inset-bottom) + 8px));
     display:flex; flex-direction:column; align-items:center; gap:12px;
   }
   .wave-wrap { width:100%; height:64px; display:flex; align-items:center; justify-content:center; }
@@ -204,49 +207,53 @@
 
   #cpPanel {
     background:#1c1c1e;
-    border-radius:20px 20px 0 0;
-    padding:20px 22px 40px 22px;
+    border-radius:16px 16px 0 0;
+    padding:12px 16px 20px 16px;
+    padding-bottom:max(20px, env(safe-area-inset-bottom));
     width:100%;
     max-width:430px;
+    max-height:60dvh;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
     transform:translateY(100%);
     transition:transform .35s cubic-bezier(.32,1,.23,1);
   }
   #cpOverlay.open #cpPanel { transform:translateY(0); }
 
   .cp-handle {
-    width:36px; height:4px; background:#48484a; border-radius:2px;
-    margin:0 auto 18px auto;
+    width:32px; height:4px; background:#48484a; border-radius:2px;
+    margin:0 auto 12px auto;
   }
   .cp-title {
-    font-size:13px; font-weight:700; color:#8e8e93;
+    font-size:11px; font-weight:700; color:#8e8e93;
     letter-spacing:0.5px; text-transform:uppercase;
-    margin-bottom:16px;
+    margin-bottom:12px;
   }
 
   /* セクション */
-  .cp-section { margin-bottom:20px; }
+  .cp-section { margin-bottom:14px; }
   .cp-section-label {
-    font-size:11px; font-weight:700; color:#636366;
+    font-size:10px; font-weight:700; color:#636366;
     letter-spacing:0.5px; text-transform:uppercase;
-    margin-bottom:10px;
+    margin-bottom:7px;
   }
 
   /* 言語切替 */
-  .cp-lang-btns { display:flex; gap:10px; }
+  .cp-lang-btns { display:flex; gap:8px; }
   .cp-lang-btn {
-    flex:1; padding:10px 0; border-radius:12px;
+    flex:1; padding:7px 0; border-radius:10px;
     background:#2c2c2e; border:2px solid transparent;
-    color:#e5e5ea; font-size:14px; font-weight:600;
+    color:#e5e5ea; font-size:12px; font-weight:600;
     cursor:pointer; transition:all .2s;
-    display:flex; flex-direction:column; align-items:center; gap:3px;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
   }
-  .cp-lang-btn .sub { font-size:10px; color:#8e8e93; font-weight:500; }
+  .cp-lang-btn .sub { font-size:9px; color:#8e8e93; font-weight:500; }
   .cp-lang-btn.active { border-color:#0a84ff; background:#102338; color:#0a84ff; }
   .cp-lang-btn.active .sub { color:#7fb8ff; }
 
   /* ローディング時間スライダー */
   .cp-slider-row {
-    display:flex; align-items:center; gap:12px;
+    display:flex; align-items:center; gap:10px;
   }
   .cp-slider {
     flex:1;
@@ -257,48 +264,51 @@
   }
   .cp-slider::-webkit-slider-thumb {
     -webkit-appearance:none;
-    width:22px; height:22px;
+    width:20px; height:20px;
     border-radius:50%; background:#fff;
     box-shadow:0 2px 6px rgba(0,0,0,0.4);
     cursor:pointer;
   }
   .cp-slider-val {
-    font-size:13px; font-weight:700; color:#e5e5ea;
-    min-width:36px; text-align:right;
+    font-size:11px; font-weight:700; color:#e5e5ea;
+    min-width:32px; text-align:right;
   }
 
   /* キーボード操作ガイド */
-  .cp-keys { display:flex; flex-direction:column; gap:8px; }
+  .cp-keys { display:flex; flex-direction:column; gap:5px; }
   .cp-key-row {
     display:flex; align-items:center; justify-content:space-between;
-    background:#2c2c2e; border-radius:10px; padding:10px 14px;
+    background:#2c2c2e; border-radius:8px; padding:6px 11px;
   }
-  .cp-key-desc { font-size:13px; color:#e5e5ea; font-weight:500; }
+  .cp-key-desc { font-size:11px; color:#e5e5ea; font-weight:500; }
   .kbd {
     display:inline-flex; align-items:center; justify-content:center;
     background:#3a3a3c; border:1px solid #555;
-    border-radius:6px; padding:2px 8px;
-    font-size:12px; font-weight:700; color:#e5e5ea;
-    min-width:28px;
+    border-radius:5px; padding:1px 6px;
+    font-size:10px; font-weight:700; color:#e5e5ea;
+    min-width:24px;
   }
   .cp-close-btn {
-    width:100%; margin-top:16px; padding:13px 0;
-    background:#2c2c2e; border:none; border-radius:14px;
-    color:#e5e5ea; font-size:15px; font-weight:700;
+    width:100%; margin-top:10px; padding:10px 0;
+    background:#2c2c2e; border:none; border-radius:12px;
+    color:#e5e5ea; font-size:13px; font-weight:700;
     cursor:pointer;
   }
 
   .cp-start-phrase-btn {
-    width:100%; padding:11px 14px;
+    width:100%; padding:8px 11px;
     background:#2c2c2e; border:1px solid #3a3a3c;
-    border-radius:12px; cursor:pointer;
-    display:flex; align-items:center; gap:10px;
+    border-radius:10px; cursor:pointer;
+    display:flex; align-items:center; gap:8px;
     text-align:left;
     transition:background .15s;
   }
   .cp-start-phrase-btn:active { background:#0a84ff22; border-color:#0a84ff; }
-  .cp-phrase-num { font-size:14px; font-weight:700; color:#0a84ff; flex-shrink:0; }
-  .cp-phrase-text { font-size:13px; color:#e5e5ea; font-weight:500; line-height:1.4; }
+  .cp-phrase-num { font-size:12px; font-weight:700; color:#0a84ff; flex-shrink:0; }
+  .cp-phrase-text {
+    font-size:11px; color:#e5e5ea; font-weight:500; line-height:1.35;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
 </style>
 </head>
 <body>
@@ -446,7 +456,6 @@
       <button class="mic-btn" id="micBtn">
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 14C13.66 14 15 12.66 15 11V5C15 3.34 13.66 2 12 2C10.34 2 9 3.34 9 5V11C9 12.66 10.34 14 12 14Z" fill="currentColor"/><path d="M17 11C17 13.76 14.76 16 12 16C9.24 16 7 13.76 7 11H5C5 14.53 7.61 17.43 11 17.92V21H13V17.92C16.39 17.43 19 14.53 19 11H17Z" fill="currentColor"/></svg>
       </button>
-      <div class="home-indicator"></div>
     </div>
 
   </div>
