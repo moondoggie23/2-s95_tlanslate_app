@@ -71,15 +71,15 @@
   .card {
     background:#1c1c1e;
     border-radius:20px;
-    padding:20px 20px;
+    padding:22px 18px;
     position:relative;
-    min-height:96px;
+    min-height:110px;
     display:flex;
     flex-direction:column;
     justify-content:center;
   }
   .card .lang-label {
-    font-size:12px;
+    font-size:14px;
     font-weight:700;
     letter-spacing:0.5px;
     color:#636366;
@@ -88,22 +88,24 @@
   }
   .card .text {
     color:#fff;
-    font-size:21px;
-    line-height:1.45;
+    font-size:26px;
+    line-height:1.5;
     font-weight:500;
+    padding-right:36px;
+    white-space:nowrap;
     transition:opacity .18s ease, transform .18s ease;
   }
   .card.result { background:linear-gradient(135deg,#103a73,#0a2d57); }
   .card.result .lang-label { color:#7fb8ff; }
   .card .speaker {
     position:absolute;
-    top:18px; right:18px;
-    width:26px; height:26px;
+    top:16px; right:16px;
+    width:22px; height:22px;
     color:#636366;
   }
   .card.result .speaker { color:#7fb8ff; }
 
-  .placeholder { color:#48484a; font-size:15px; font-weight:500; }
+  .placeholder { color:#48484a; font-size:18px; font-weight:500; }
 
   .rec-cursor {
     display:inline-block;
@@ -134,9 +136,9 @@
   }
   .lang-pill.confirmed { color:#0a84ff; border-color:#0a3a66; background:#102338; }
 
-  .translating-tag { display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:#7fb8ff; }
+  .translating-tag { display:inline-flex; align-items:center; gap:10px; font-size:17px; font-weight:600; color:#7fb8ff; }
   .spinner {
-    width:14px; height:14px;
+    width:20px; height:20px;
     border:2px solid rgba(127,184,255,0.25);
     border-top-color:#7fb8ff;
     border-radius:50%;
@@ -285,6 +287,18 @@
     color:#e5e5ea; font-size:15px; font-weight:700;
     cursor:pointer;
   }
+
+  .cp-start-phrase-btn {
+    width:100%; padding:11px 14px;
+    background:#2c2c2e; border:1px solid #3a3a3c;
+    border-radius:12px; cursor:pointer;
+    display:flex; align-items:center; gap:10px;
+    text-align:left;
+    transition:background .15s;
+  }
+  .cp-start-phrase-btn:active { background:#0a84ff22; border-color:#0a84ff; }
+  .cp-phrase-num { font-size:14px; font-weight:700; color:#0a84ff; flex-shrink:0; }
+  .cp-phrase-text { font-size:13px; color:#e5e5ea; font-weight:500; line-height:1.4; }
 </style>
 </head>
 <body>
@@ -296,7 +310,20 @@
     <div class="cp-title">コントロールパネル</div>
 
     <div class="cp-section">
-      <div class="cp-section-label">🌐 言語</div>
+      <div class="cp-section-label">▶ フレーズ開始</div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button class="cp-start-phrase-btn" onclick="startPhrase(1)">
+          <span class="cp-phrase-num">①</span>
+          <span class="cp-phrase-text" id="cpPhrase1Label">…</span>
+        </button>
+        <button class="cp-start-phrase-btn" onclick="startPhrase(2)">
+          <span class="cp-phrase-num">②</span>
+          <span class="cp-phrase-text" id="cpPhrase2Label">…</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="cp-section">
       <div class="cp-lang-btns">
         <button class="cp-lang-btn active" id="btnLangHi" onclick="setLang('hi')">
           ヒンディー語<span class="sub">Hindi</span>
@@ -400,7 +427,7 @@
         <div class="listening-tag" id="recordedTag" style="display:none;"><span class="dot"></span>RECORDED</div>
       </div>
 
-      <div class="card result">
+      <div class="card result" id="resultCard" style="cursor:pointer;" title="タップ → フレーズ②を翻訳">
         <div class="speaker">
           <svg viewBox="0 0 24 24" fill="none"><path d="M11 5L6 9H3V15H6L11 19V5Z" fill="currentColor"/><path d="M15.5 8.5C16.5 9.5 17 10.7 17 12C17 13.3 16.5 14.5 15.5 15.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
         </div>
@@ -432,22 +459,36 @@
 const PHRASES = {
   hi: {
     langLabel: 'ヒンディー語',
-    p1: { src: 'वे बेरहमी से लोगों को मार डालते हैं।', ja: 'あいつら平気で人を殺す。' },
+    p1: { src: 'वे बेरहमी से लोगों को मार डालते हैं।', ja: '彼らは平気で人を殺す。' },
     p2: { src: 'वह लोगों को नर्क में ले जाता है।',     ja: '人を地獄に連れていく。' },
   },
   tw: {
     langLabel: 'トゥイ語',
-    p1: { src: 'wokum nnipa a ɛnyɛ den.',   ja: 'あいつら平気で人を殺す。' },
+    p1: { src: 'wokum nnipa a ɛnyɛ den.',   ja: '彼らは平気で人を殺す。' },
     p2: { src: 'wɔde nnipa kɔ hell.',        ja: '人を地獄に連れていく。' },
   },
 };
 
 let currentLang = 'hi';
 
+function updatePhraseLabels() {
+  const p = PHRASES[currentLang];
+  document.getElementById('cpPhrase1Label').textContent = p.p1.src + ' → ' + p.p1.ja;
+  document.getElementById('cpPhrase2Label').textContent = p.p2.src + ' → ' + p.p2.ja;
+}
+
 function setLang(lang) {
   currentLang = lang;
   document.getElementById('btnLangHi').classList.toggle('active', lang === 'hi');
   document.getElementById('btnLangTw').classList.toggle('active', lang === 'tw');
+  updatePhraseLabels();
+}
+
+function startPhrase(num) {
+  const p = PHRASES[currentLang];
+  const phrase = num === 1 ? p.p1 : p.p2;
+  goStage1({ ...phrase, langLabel: p.langLabel });
+  closePanel();
 }
 
 /* =========================================================
@@ -455,7 +496,7 @@ function setLang(lang) {
    ========================================================= */
 const cpOverlay = document.getElementById('cpOverlay');
 
-function openPanel()  { cpOverlay.classList.add('open'); }
+function openPanel()  { updatePhraseLabels(); cpOverlay.classList.add('open'); }
 function closePanel() { cpOverlay.classList.remove('open'); }
 
 cpOverlay.addEventListener('click', e => { if (e.target === cpOverlay) closePanel(); });
@@ -500,11 +541,24 @@ function clearAllTimers() {
   activeTimers = [];
 }
 
+// テキストがカード幅を超える場合、フォントサイズを自動縮小して必ず1行に収める
+const BASE_FONT_SIZE = 26;
+const MIN_FONT_SIZE  = 15;
+function fitTextToLine(el) {
+  el.style.fontSize = BASE_FONT_SIZE + 'px';
+  let size = BASE_FONT_SIZE;
+  while (el.scrollWidth > el.clientWidth && size > MIN_FONT_SIZE) {
+    size -= 0.5;
+    el.style.fontSize = size + 'px';
+  }
+}
+
 function setCardText(el, html) {
   el.style.opacity = 0;
   el.style.transform = 'translateY(4px)';
   const t = setTimeout(() => {
     el.innerHTML = html;
+    fitTextToLine(el);
     el.style.opacity = 1;
     el.style.transform = 'translateY(0)';
   }, 180);
@@ -519,14 +573,16 @@ function typeWords(el, fullText, totalDurationMs, onDone) {
   const interval = totalDurationMs / words.length;
   el.style.opacity = 1;
   el.style.transform = 'translateY(0)';
+  el.style.fontSize = BASE_FONT_SIZE + 'px';
   el.innerHTML = CURSOR;
 
   typeInterval = setInterval(() => {
     i++;
     el.innerHTML = words.slice(0, i).join(' ') + CURSOR;
+    fitTextToLine(el);
     if (i >= words.length) {
       clearInterval(typeInterval);
-      const t = setTimeout(() => { el.innerHTML = fullText; if(onDone) onDone(); }, 250);
+      const t = setTimeout(() => { el.innerHTML = fullText; fitTextToLine(el); if(onDone) onDone(); }, 250);
       activeTimers.push(t);
     }
   }, interval);
@@ -538,7 +594,9 @@ function resetUI() {
   recordedTag.style.display = 'none';
   resultText.style.opacity = 1;
   resultText.style.transform = 'translateY(0)';
+  resultText.style.fontSize = BASE_FONT_SIZE + 'px';
   resultText.innerHTML = '<span class="placeholder">―</span>';
+  sourceText.style.fontSize = BASE_FONT_SIZE + 'px';
   sourceText.innerHTML = '';
   sourceLangLabel.textContent = '言語検出中';
   langPillSource.classList.remove('confirmed');
@@ -616,6 +674,12 @@ startBtn.addEventListener('click', () => {
 
 hiddenTrigger.addEventListener('click', () => {
   openPanel();
+});
+
+// 日本語訳カードをタップ → フレーズ②をスタート
+document.getElementById('resultCard').addEventListener('click', () => {
+  const p = PHRASES[currentLang];
+  goStage1({ ...p.p2, langLabel: p.langLabel });
 });
 
 /* =========================================================
